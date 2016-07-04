@@ -1,4 +1,5 @@
 use std::io;
+use std::io::Write;
 
 /// A value in our little language. For now, just an integer.
 #[derive(Debug)]
@@ -21,7 +22,8 @@ fn read() -> String {
 
 fn repl() {
     loop {
-        println!("sooty> ");
+        print!("sooty> ");
+        io::stdout().flush().unwrap();
 
         let input = read();
         println!("{:?}", lex(&input));
