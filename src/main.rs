@@ -1,15 +1,7 @@
 use std::io;
 use std::io::Write;
 
-/// A value in our little language. For now, just an integer.
-#[derive(Debug)]
-struct Value {
-    value: i64,
-}
-
-fn lex(source: &str) -> Vec<Value> {
-    vec![Value { value: 42 }]
-}
+mod lexer;
 
 fn read() -> String {
     let mut input = String::new();
@@ -32,7 +24,7 @@ fn repl() {
             break;
         }
 
-        println!("{:?}", lex(&input));
+        println!("{:?}", lexer::lex(&input));
     }
 }
 
