@@ -1,22 +1,30 @@
-// TODO: move Value to a separate file.
+use self::Lexeme::*;
 
-/// A value in our little language. For now, just an integer.
 #[derive(Debug, PartialEq)]
-pub struct Value {
-    value: i64,
+pub enum Lexeme {
+    LeftParen,
+    RightParen,
+    Integer {
+        value: i64,
+    },
 }
 
-pub fn lex(source: &str) -> Result<Vec<Value>, ()> {
+pub fn lex(source: &str) -> Result<Vec<Lexeme>, ()> {
     let mut result = vec![];
     for part in source.split_whitespace() {
-        match part.parse::<i64>() {
-            Ok(num) => {
-                result.push(Value { value: num });
+        let lexeme = match part {
+            "(" => LeftParen,
+            ")" => RightParen,
+            _ => {
+                match part.parse::<i64>() {
+                    Ok(num) => Integer { value: num },
+                    Err(..) => {
+                        return Err(());
+                    }
+                }
             }
-            Err(..) => {
-                return Err(());
-            }
-        }
+        };
+        result.push(lexeme);
     }
     Ok(result)
 }
@@ -24,11 +32,23 @@ pub fn lex(source: &str) -> Result<Vec<Value>, ()> {
 #[test]
 fn test_lex_single_number() {
     let lexed = lex(&"41").unwrap();
-    assert!(lexed == vec![Value { value: 41 }]);
+    assert!(lexed == vec![Integer { value: 41 }]);
 }
 
 #[test]
 fn test_lex_multiple_numbers() {
     let lexed = lex(&"42 42").unwrap();
-    assert!(lexed == vec![Value { value: 42 }, Value { value: 42 }]);
+    assert!(lexed == vec![Integer { value: 42 }, Integer { value: 42 }]);
+}
+
+#[test]
+fn test_lex_left_paren() {
+    let lexed = lex(&"(").unwrap();
+    assert!(lexed == vec![LeftParen]);
+}
+
+#[test]
+fn test_lex_right_paren() {
+    let lexed = lex(&")").unwrap();
+    assert!(lexed == vec![RightParen]);
 }
