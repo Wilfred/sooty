@@ -1,0 +1,6 @@
+[package]
+name = "sooty"
+version = "0.1.0"
+authors = ["Wilfred Hughes <me@wilfred.me.uk>"]
+
+[dependencies]
