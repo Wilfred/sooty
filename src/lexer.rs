@@ -6,16 +6,16 @@ pub struct Value {
     value: i64,
 }
 
-pub fn lex(source: &str) -> Vec<Value> {
+pub fn lex(source: &str) -> Result<Vec<Value>, ()> {
     let mut result = vec![];
     for part in source.split_whitespace() {
         result.push(Value { value: 42 });
     }
-    result
+    Ok(result)
 }
 
 #[test]
 fn test_lex_multiple_numbers() {
-    let lexed = lex(&"42 42");
+    let lexed = lex(&"42 42").unwrap();
     assert!(lexed == vec![Value { value: 42}, Value { value: 42}]);
 }
