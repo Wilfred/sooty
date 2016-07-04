@@ -26,11 +26,18 @@ fn repl() {
         io::stdout().flush().unwrap();
 
         let input = read();
+
+        if input.trim() == "(quit)" {
+            break;
+        }
+
         println!("{:?}", lex(&input));
-        break;
     }
 }
 
 fn main() {
+    println!("Sooty, a simple lisp.");
+    println!("Press Ctrl-C or type (quit) to exit.\n");
+
     repl();
 }
