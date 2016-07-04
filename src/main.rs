@@ -14,7 +14,8 @@ fn lex(source: &str) -> Vec<Value> {
 fn read() -> String {
     let mut input = String::new();
 
-    io::stdin().read_line(&mut input)
+    io::stdin()
+        .read_line(&mut input)
         .expect("Failed to read line");
 
     input
