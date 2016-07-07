@@ -1,4 +1,3 @@
-use self::Lexeme::*;
 
 #[derive(Debug, PartialEq)]
 pub enum Lexeme {
@@ -9,17 +8,17 @@ pub enum Lexeme {
     },
 }
 
-pub fn lex(source: &str) -> Result<Vec<Lexeme>, ()> {
+pub fn lex(source: &str) -> Result<Vec<Lexeme>, String> {
     let mut result = vec![];
     for part in source.split_whitespace() {
         let lexeme = match part {
-            "(" => LeftParen,
-            ")" => RightParen,
+            "(" => Lexeme::LeftParen,
+            ")" => Lexeme::RightParen,
             _ => {
                 match part.parse::<i64>() {
-                    Ok(num) => Integer { value: num },
+                    Ok(num) => Lexeme::Integer { value: num },
                     Err(..) => {
-                        return Err(());
+                        return Err(format!("Could not lex {}", part));
                     }
                 }
             }
