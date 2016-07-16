@@ -55,7 +55,7 @@ pub fn lex(source: &str) -> Result<Vec<Lexeme>, String> {
     Ok(result)
 }
 
-pub fn parse(lexemes: Vec<Lexeme>) -> Result<OwningValue, String> {
+pub fn parse(lexemes: Vec<Lexeme>) -> Result<Vec<OwningValue>, String> {
     let mut stack: Vec<_> = vec![];
 
     let root_list = OwningValue::List { items: vec![] };
@@ -113,8 +113,14 @@ pub fn parse(lexemes: Vec<Lexeme>) -> Result<OwningValue, String> {
     if !stack.is_empty() {
         return Err("Parsing had data left over: unclosed ( paren".to_owned());
     }
-
-    Ok(result)
+    match result {
+        OwningValue::List {items} => {
+            return Ok(items.into_iter().map(|boxed_item| *boxed_item).collect());
+        }
+        _ => {
+            panic!("Final parsed value was not a list")
+        }
+    }
 }
 
 #[test]
