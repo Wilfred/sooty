@@ -89,14 +89,19 @@ pub fn parse(lexemes: Vec<Lexeme>) -> Result<OwningValue, String> {
             }
             Lexeme::RightParen => {
                 let current_list = stack.pop().expect("Empty stack: Need a list to terminate");
-                let mut parent_list = stack.pop().expect("Empty stack: Need a parent list to append this list to.");
-
-                match parent_list {
-                    OwningValue::List { ref mut items } => {
-                        items.push(Box::new(current_list));
+                match stack.pop() {
+                    Some(ref mut parent_list) => {
+                        match parent_list {
+                            &mut OwningValue::List { ref mut items } => {
+                                items.push(Box::new(current_list));
+                            }
+                            _ => {
+                                panic!("Need a list to append this list to");
+                            }
+                        }
                     }
                     _ => {
-                        panic!("Need a list to append this list to");
+                        return Err("Unmatched ) paren.".to_owned());
                     }
                 }
             }
@@ -140,4 +145,12 @@ fn test_lex_left_paren_and_number() {
 fn test_lex_right_paren() {
     let lexed = lex(&")").unwrap();
     assert!(lexed == vec![Lexeme::RightParen]);
+}
+
+
+#[test]
+fn test_parse_unbalanced_left() {
+    let lexed = lex(&"(").unwrap();
+    let parsed = parse(lexed);
+    assert!(parsed.is_err());
 }
