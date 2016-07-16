@@ -24,7 +24,15 @@ fn repl() {
             break;
         }
 
-        println!("{:?}", lexer::lex(&input));
+        let result_lexemes = lexer::lex(&input);
+        match result_lexemes {
+            Ok(lexemes) => {
+                println!("{:?}", lexer::parse(lexemes));
+            }
+            Err(msg) => {
+                println!("Err: {:?}", msg);
+            }
+        }
     }
 }
 
