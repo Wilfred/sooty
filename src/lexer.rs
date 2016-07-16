@@ -89,8 +89,8 @@ pub fn parse(lexemes: Vec<Lexeme>) -> Result<OwningValue, String> {
             }
             Lexeme::RightParen => {
                 let current_list = stack.pop().expect("Empty stack: Need a list to terminate");
-                match stack.pop() {
-                    Some(ref mut parent_list) => {
+                match stack.last_mut() {
+                    Some(mut parent_list) => {
                         match parent_list {
                             &mut OwningValue::List { ref mut items } => {
                                 items.push(Box::new(current_list));
@@ -153,4 +153,18 @@ fn test_parse_unbalanced_left() {
     let lexed = lex(&"(").unwrap();
     let parsed = parse(lexed);
     assert!(parsed.is_err());
+}
+
+#[test]
+fn test_parse_unbalanced_right() {
+    let lexed = lex(&")").unwrap();
+    let parsed = parse(lexed);
+    assert!(parsed.is_err());
+}
+
+#[test]
+fn test_parse_empty() {
+    let lexed = lex(&"()").unwrap();
+    let parsed = parse(lexed);
+    assert!(parsed.is_ok());
 }
