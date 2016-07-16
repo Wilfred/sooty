@@ -25,13 +25,12 @@ fn repl() {
         }
 
         let result_lexemes = lexer::lex(&input);
+        println!("Lexed: {:?}", result_lexemes);
         match result_lexemes {
             Ok(lexemes) => {
-                println!("{:?}", lexer::parse(lexemes));
+                println!("Parsed: {:?}", lexer::parse(lexemes));
             }
-            Err(msg) => {
-                println!("Err: {:?}", msg);
-            }
+            _ => {}
         }
     }
 }
