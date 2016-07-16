@@ -15,8 +15,8 @@ pub enum OwningValue {
         value: i64,
     },
     List {
-        items: Vec<Box<OwningValue>>
-    }
+        items: Vec<Box<OwningValue>>,
+    },
 }
 
 pub fn lex(source: &str) -> Result<Vec<Lexeme>, String> {
