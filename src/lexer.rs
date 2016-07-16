@@ -22,20 +22,35 @@ pub enum OwningValue {
 pub fn lex(source: &str) -> Result<Vec<Lexeme>, String> {
     let mut result = vec![];
 
-    for part in source.split_whitespace() {
-        let lexeme = match part {
-            "(" => Lexeme::LeftParen,
-            ")" => Lexeme::RightParen,
-            _ => {
-                match part.parse::<i64>() {
-                    Ok(num) => Lexeme::Integer { value: num },
-                    Err(..) => {
-                        return Err(format!("Could not lex {}", part));
-                    }
-                }
+    for mut part in source.split_whitespace() {
+        if part.starts_with("(") {
+            result.push(Lexeme::LeftParen);
+
+            if part == "(" {
+                continue;
+            } else {
+                part = &part[1..];
             }
-        };
-        result.push(lexeme);
+        }
+
+        if part.starts_with(")") {
+            result.push(Lexeme::RightParen);
+
+            if part == ")" {
+                continue;
+            } else {
+                part = &part[1..];
+            }
+        }
+
+        match part.parse::<i64>() {
+            Ok(num) => {
+                result.push(Lexeme::Integer { value: num });
+            }
+            Err(..) => {
+                return Err(format!("Could not lex {}", part));
+            }
+        }
     }
     Ok(result)
 }
@@ -113,6 +128,12 @@ fn test_lex_multiple_numbers() {
 fn test_lex_left_paren() {
     let lexed = lex(&"(").unwrap();
     assert!(lexed == vec![Lexeme::LeftParen]);
+}
+
+#[test]
+fn test_lex_left_paren_and_number() {
+    let lexed = lex(&"(1").unwrap();
+    assert!(lexed == vec![Lexeme::LeftParen, Lexeme::Integer { value: 1 }]);
 }
 
 #[test]
