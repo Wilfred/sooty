@@ -13,3 +13,9 @@ GPLv3. Sooty image
 
 * [rust-gc](https://github.com/Manishearth/rust-gc)
 * [Graphs and arena allocation](Graphs and arena allocation)
+
+## Syntactic Choices
+
+Where possible, Sooty will use `[]` for literal lists,
+and `()` for lists to evaluate. This should minimise quoting, and
+distinguish lists for data from unevaluated syntax.
